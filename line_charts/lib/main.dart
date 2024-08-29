@@ -1,8 +1,8 @@
+import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'mqtt_service.dart'; // Asegúrate de que este archivo esté definido y correctamente importado
 
-// Definición de la clase PotentiometerData
 class PotentiometerData {
   final DateTime time;
   final double value;
@@ -36,18 +36,19 @@ class LineChartScreen extends StatefulWidget {
 }
 
 class _LineChartScreenState extends State<LineChartScreen> {
-  late MqttService _mqttService;
   final List<PotentiometerData> _data = [];
   late ChartSeriesController _chartSeriesController;
+  late Timer _timer;
 
   @override
   void initState() {
     super.initState();
 
-    _mqttService = MqttService('broker.emqx.io', '');
-    _mqttService.getPotentiometerStream().listen((value) {
+    // Generar un nuevo valor aleatorio cada segundo
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
-        _data.add(PotentiometerData(DateTime.now(), value));
+        _data.add(
+            PotentiometerData(DateTime.now(), Random().nextDouble() * 100));
         if (_data.length > 20) {
           _data.removeAt(0);
         }
@@ -55,6 +56,12 @@ class _LineChartScreenState extends State<LineChartScreen> {
             addedDataIndex: _data.length - 1);
       });
     });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel(); // Cancelar el temporizador cuando se destruye el widget
+    super.dispose();
   }
 
   @override

@@ -5,15 +5,13 @@ class MqttService {
   final MqttServerClient client;
 
   MqttService(String server, String clientId)
-      : client = MqttServerClient(server, '') {
-    const sanitizedClientId = '';
-
+      : client = MqttServerClient(server, clientId) {
     client.logging(on: true);
     client.setProtocolV311();
     client.keepAlivePeriod = 20;
 
     final connMessage = MqttConnectMessage()
-        .withClientIdentifier(sanitizedClientId)
+        .withClientIdentifier(clientId)
         .startClean()
         .withWillQos(MqttQos.atLeastOnce);
 
@@ -33,11 +31,12 @@ class MqttService {
 
       await for (final c in client.updates!) {
         final MqttPublishMessage recMess = c[0].payload as MqttPublishMessage;
-
         final String pt =
             MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
-        yield double.tryParse(pt) ?? 0.0;
+        // Convert to double
+        final double value = double.tryParse(pt) ?? 0.0;
+        yield value;
       }
     } else {
       client.disconnect();
