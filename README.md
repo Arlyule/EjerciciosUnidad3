@@ -9,4 +9,13 @@ Julio Samuel Torres Reyes
 GIDS4093
 
 #### 01: GAUGE
-- **Archivo:** [gauge](gaugge_mqtt_app/)
+- **Carpeta:** [gauge](gaugge_mqtt_app/)
+
+#### 01: LINE
+- **Carpeta:** [line_char](line_charts/)
+
+#### 01: Humedad
+- **Carpeta:** [humedad](mqtt_humidity_level/)
+
+#### 04: OLED
+- **Carpeta:** [oled](PantallaOled.mp4)
